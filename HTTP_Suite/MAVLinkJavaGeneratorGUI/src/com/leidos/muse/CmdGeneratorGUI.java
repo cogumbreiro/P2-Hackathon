@@ -580,7 +580,7 @@ public class CmdGeneratorGUI extends JPanel
     	        wpParams.append("cmd=flyto&");
     	        
     	        int i = 0;
-    	        for(Object wp : listModel.toArray() + 1){
+    	        for(Object wp : listModel.toArray()){
     	        	if (i!=0){
     	        		wpParams.append("&");
     	        	}

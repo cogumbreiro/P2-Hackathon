@@ -42,7 +42,7 @@ class MavLinkCommunicator extends Thread
 	
     private Socket myClientSocket;
     private  int sequence = 0;
-    private boolean m_bRunThread = null; 
+    private boolean m_bRunThread = false; 
     
     // Obtain the input stream and the output stream for the socket  
     private DataInputStream  dis = null; 
@@ -140,6 +140,7 @@ class MavLinkCommunicator extends Thread
     }
     
     public String sendArmCmd(){    
+        return null;
     }
     
     public String sendDisArmCmd(){
@@ -198,7 +199,7 @@ class MavLinkCommunicator extends Thread
     			msg.custom_mode = 4;
         		msg.base_mode = 59;
     			break;
-    		
+    		}
     		
     		byte[] result1 = msg.encode();
 			
@@ -506,7 +507,10 @@ class MavLinkCommunicator extends Thread
      * @return response string from simulator
      */
     private String waitForUDPResponse(int num){
+        int waitForResponse = 3000; // 3 secs
         String response = "";
+        int counter = 0;
+        int found = 0;
         try{
         	while (true) {
         		// Run in a loop until counter has expired or ack found 

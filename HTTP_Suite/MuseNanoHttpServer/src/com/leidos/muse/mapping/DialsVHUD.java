@@ -119,7 +119,15 @@ public class DialsVHUD extends JFrame
 	         
 	         DialPlot dialBatt = createDialPlot(new StandardDialScale(0, 100, 90D, -360D, 10D, 1), "percent");
 	         dialBatt.setDataset(datasetBattery);
+
+	         JFreeChart jfreechart1 = new JFreeChart(dialRoll);
+	         jfreechart1.setTitle("Roll");
 	         
+	         JFreeChart jfreechart2 = new JFreeChart(dialPitch);
+	         jfreechart2.setTitle("Pitch");
+	         
+	         JFreeChart jfreechart3 = new JFreeChart(dialYaw);
+	         jfreechart3.setTitle("Yaw");
 	         
 	         JFreeChart jfreechart4 = new JFreeChart(dialAlt);
 	         jfreechart4.setTitle("Altitude");
