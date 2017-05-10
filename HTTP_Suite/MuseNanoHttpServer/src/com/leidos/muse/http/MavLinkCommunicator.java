@@ -57,7 +57,7 @@ class MavLinkCommunicator extends Thread
     private boolean isUDP = false;
     
     private int mySysID = 255;  // system id of our mavlink client
-    private int targetID = 2;   //  target id of the simulator 
+    private int targetID = 1;   //  target id of the simulator 
     
     private boolean bConnected = false;
     private DialsVHUD hud = null;
@@ -171,7 +171,7 @@ class MavLinkCommunicator extends Thread
             System.out.println("Sending ARM command... Bytes sent: " + result1.length);
             
             String response = send(result1, false);
-            speak("disarmed");
+            speak("armed");
             
             return response;
             
@@ -245,14 +245,14 @@ class MavLinkCommunicator extends Thread
                 bManual = true;
                 speak("mode changed to alt hold mode");
                 msg.custom_mode = 2;
-                msg.base_mode = 89; // assiging base_mode is not necessary
+                msg.base_mode = 81; // assiging base_mode is not necessary
                 break;
     		}
     		
     		byte[] result1 = msg.encode();
 			
 			System.out.println("Sending SET_MODE command... Bytes sent: " + result1.length);
-			String response = send(result1, false);
+			String response = send(result1, true);
 	        
             return response;
     		
@@ -670,6 +670,8 @@ class MavLinkCommunicator extends Thread
     	try{
     		
 			if(isUDP){
+                System.out.println("Sending cmd... Bytes sent: " + results.length);
+                System.out.println("Bytes = " + results.toString());
 			    dsocket.send(new DatagramPacket(results, results.length, address));
 			    
 			    if(wait){
@@ -755,7 +757,7 @@ class MavLinkCommunicator extends Thread
                 		else if (mavMsg.messageType == 74 && mavMsg instanceof msg_vfr_hud){
                 			msg_vfr_hud vfr = (msg_vfr_hud)mavMsg;
                 			hud.updateHUD2(vfr.heading, vfr.alt, vfr.throttle);
-                            System.out.println("	type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString());
+                            //System.out.println("	type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString());
                 		}
                 		else if (mavMsg.messageType == 74 && mavMsg instanceof msg_vfr_hud){
                 			msg_vfr_hud att = (msg_vfr_hud)mavMsg;
@@ -767,7 +769,7 @@ class MavLinkCommunicator extends Thread
                 		}
                 		else if( mavMsg instanceof msg_mission_item){ 
                 			msg_mission_item msg = (msg_mission_item)mavMsg;
-                            System.out.println("	type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString());
+                            //System.out.println("	type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString());
                             homeX = msg.x;
                             homeY = msg.y;
                             homeZ = msg.z;
@@ -780,7 +782,7 @@ class MavLinkCommunicator extends Thread
                 	             break; // Go out of the loop and get new packet
                 	    }
       		          // Print out all received messages
-                      System.out.println("	SysId=" + mavMsg.sysId + " CompId=" + mavMsg.componentId + " seq=" + mavMsg.sequence + " type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString()); 
+                      //System.out.println("	SysId=" + mavMsg.sysId + " CompId=" + mavMsg.componentId + " seq=" + mavMsg.sequence + " type=" + mavMsg.messageType + " length=" + mavMsg.length + " "+ mavMsg.toString()); 
                 	}      	            
             	}
             	// tcp

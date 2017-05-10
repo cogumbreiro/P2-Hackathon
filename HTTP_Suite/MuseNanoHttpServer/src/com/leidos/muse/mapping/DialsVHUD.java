@@ -81,11 +81,12 @@ public class DialsVHUD extends JFrame
 		
 		public void updateHUD2(double hdg, double alt, double throttle)
 		{
-
 			datasetAlt.setValue(alt*3.2808399);
+			datasetThrottle.setValue(throttle);
 		}
 		public void updateHUD3(double battery)
 		{
+			datasetBattery.setValue(battery);
 		}
 
 		public DemoPanel()
