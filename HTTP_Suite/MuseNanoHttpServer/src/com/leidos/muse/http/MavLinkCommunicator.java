@@ -42,7 +42,7 @@ class MavLinkCommunicator extends Thread
 	
     private Socket myClientSocket;
     private  int sequence = 0;
-    private boolean m_bRunThread = false; 
+    private boolean m_bRunThread = true; 
     
     // Obtain the input stream and the output stream for the socket  
     private DataInputStream  dis = null; 
@@ -85,6 +85,16 @@ class MavLinkCommunicator extends Thread
         hud = new DialsVHUD("Leidos Ground Control - HTTP Server");
         hud.pack();
         hud.setVisible(true);
+
+        // initialization of variables
+        try {
+        dsocket =  new DatagramSocket(port);
+        } 
+        catch (SocketException e){
+            e.printStackTrace();
+        }
+        packet = new DatagramPacket(ubuffer, ubuffer.length);
+        isUDP = true;
     	
 	   	VoiceManager voiceManager = VoiceManager.getInstance();
 	   	voice = voiceManager.getVoice("kevin");
@@ -140,7 +150,36 @@ class MavLinkCommunicator extends Thread
     }
     
     public String sendArmCmd(){    
-        return null;
+        try {
+            msg_command_long msg = new msg_command_long(mySysID,0);
+
+            msg.command = MAV_CMD.MAV_CMD_COMPONENT_ARM_DISARM;
+            msg.sequence = sequence++;
+            msg.param1 = 1;
+            msg.param2 = 0;
+            msg.param3 = 0;
+            msg.param4 = 0;
+            msg.param5 = 0;
+            msg.param6 = 0;
+            msg.param7 = 0;
+            msg.target_system = targetID;
+            msg.target_component = 1;
+            msg.confirmation = 0;
+
+            byte[] result1 = msg.encode();
+            
+            System.out.println("Sending ARM command... Bytes sent: " + result1.length);
+            
+            String response = send(result1, false);
+            speak("disarmed");
+            
+            return response;
+            
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "";
+        }
     }
     
     public String sendDisArmCmd(){
@@ -199,6 +238,15 @@ class MavLinkCommunicator extends Thread
     			msg.custom_mode = 4;
         		msg.base_mode = 59;
     			break;
+
+            // https://github.com/ArduPilot/ardupilot/blob/master/ArduCopter/defines.h#L88
+            case 2:
+                System.out.println("got alt hold mode");
+                bManual = true;
+                speak("mode changed to alt hold mode");
+                msg.custom_mode = 2;
+                msg.base_mode = 89; // assiging base_mode is not necessary
+                break;
     		}
     		
     		byte[] result1 = msg.encode();
@@ -764,12 +812,13 @@ class MavLinkCommunicator extends Thread
             	if(!isUDP){
             		dis.close(); 
             		out.close();
+                    myClientSocket.close(); 
             	}
             	else{
             		dsocket.close();
             	}
-                hbThread.stop();
-                myClientSocket.close(); 
+                if (hbThread != null)
+                    hbThread.stop();
                 System.out.println("...Stopped"); 
             } 
             catch(IOException ioe) 
