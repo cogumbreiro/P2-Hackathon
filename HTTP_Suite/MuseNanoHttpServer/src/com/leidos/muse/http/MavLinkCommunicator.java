@@ -69,6 +69,30 @@ class MavLinkCommunicator extends Thread
     private boolean homeUpdated = false;
     private boolean bManual = false;
  
+    /* helper code for pliny synthesis */
+    /* begin */
+    public void setManual(boolean m){
+        bManual = m;
+    }
+    
+    public static msg_set_mode setCustom(int custom, msg_set_mode msg){
+        msg.custom_mode = custom;
+        return msg;
+    }
+    
+    public static msg_set_mode setBase(int base, msg_set_mode msg){
+        msg.base_mode = base;
+        return msg;
+    }
+    
+    public void initMessageCommand(int cmd, int seq, float par1, int target_system, int target_component, msg_command_long msg){
+        msg.command = cmd;
+        msg.sequence = seq;
+        msg.param1 = par1;
+        msg.target_system = target_system;
+        msg.target_component = target_component;
+    }
+    /* end */
     
     public MavLinkCommunicator() 
     { 
@@ -123,7 +147,7 @@ class MavLinkCommunicator extends Thread
     		msg_mission_request msg = new msg_mission_request(mySysID, 0);
 			msg.sequence = 0;  // 0 denotes 1st position or home position
     		msg.target_system = 1;
-    		msg.target_component = 190;
+    		msg.target_component = 1;
     		
 			byte[] result = msg.encode();
 			
@@ -148,25 +172,32 @@ class MavLinkCommunicator extends Thread
 			return "Error";
 		}
     }
+
+    /* Code synthesized by Pliny team */
+    /* begin */
+    public byte[] initMsgCmd(
+        int sypet_arg0,
+        int sypet_arg1,
+        int sypet_arg2,
+        int sypet_arg3,
+        int sypet_arg4,
+        int sypet_arg5,
+        int sypet_arg6) throws IOException
+    {
+        org.mavlink.messages.common.msg_command_long sypet_var8 = new org.mavlink.messages.common.msg_command_long(sypet_arg5,sypet_arg6);
+        initMessageCommand(sypet_arg0,sypet_arg1,sypet_arg4,sypet_arg3,sypet_arg2,sypet_var8);
+        byte[] sypet_var10 = sypet_var8.encode();
+        return sypet_var10;
+    }
+    /* end */
     
     public String sendArmCmd(){    
+
         try {
-            msg_command_long msg = new msg_command_long(mySysID,0);
-
-            msg.command = MAV_CMD.MAV_CMD_COMPONENT_ARM_DISARM;
-            msg.sequence = sequence++;
-            msg.param1 = 1;
-            msg.param2 = 0;
-            msg.param3 = 0;
-            msg.param4 = 0;
-            msg.param5 = 0;
-            msg.param6 = 0;
-            msg.param7 = 0;
-            msg.target_system = targetID;
-            msg.target_component = 1;
-            msg.confirmation = 0;
-
-            byte[] result1 = msg.encode();
+            /* Calling synthesized code by Pliny team */
+            /* begin */
+            byte[] result1 = initMsgCmd(MAV_CMD.MAV_CMD_COMPONENT_ARM_DISARM, sequence++, 1, targetID, 1, mySysID, 0);
+            /* end */
             
             System.out.println("Sending ARM command... Bytes sent: " + result1.length);
             
@@ -214,7 +245,23 @@ class MavLinkCommunicator extends Thread
 			return "";
 		}
     }
-    
+
+    /* Code synthesized by Pliny team */
+    /* begin */
+    public org.mavlink.messages.common.msg_set_mode initMsgMode(
+        org.mavlink.messages.common.msg_set_mode sypet_arg0, 
+        int sypet_arg1,
+        int sypet_arg2,
+        MavLinkCommunicator sypet_arg3, 
+        boolean sypet_arg4)
+    {
+        org.mavlink.messages.common.msg_set_mode sypet_var22 = setBase(sypet_arg2,sypet_arg0);
+        org.mavlink.messages.common.msg_set_mode sypet_var23 = setCustom(sypet_arg1,sypet_var22);
+        sypet_arg3.setManual(sypet_arg4);
+        return sypet_var23;
+    }
+    /* end */
+
     public String sendSetModeCmd(String mode){
     	try {
     		
@@ -222,7 +269,7 @@ class MavLinkCommunicator extends Thread
     		msg_set_mode msg = new msg_set_mode(mySysID,0);
     		msg.sequence = sequence++;
     		msg.target_system = targetID;
-    		
+
     		switch(Integer.valueOf(mode)){
     		case 0:
     			System.out.println("got stabilized mode");
@@ -239,13 +286,13 @@ class MavLinkCommunicator extends Thread
         		msg.base_mode = 59;
     			break;
 
-            // https://github.com/ArduPilot/ardupilot/blob/master/ArduCopter/defines.h#L88
             case 2:
+                /* Calling synthesized code by Pliny team */
+                /* begin */
+                msg = initMsgMode(msg, 2, 81, this, true);
+                /* end */
                 System.out.println("got alt hold mode");
-                bManual = true;
                 speak("mode changed to alt hold mode");
-                msg.custom_mode = 2;
-                msg.base_mode = 81; // assiging base_mode is not necessary
                 break;
     		}
     		
@@ -265,7 +312,7 @@ class MavLinkCommunicator extends Thread
     
     public String sendLaunchCmd(){
     	try {
-    		if(!bManual){
+    		if(bManual){
     		// SET MODE to GUIDED
     		msg_set_mode msg = new msg_set_mode(mySysID,0);
     		msg.sequence = sequence++;
@@ -414,12 +461,12 @@ class MavLinkCommunicator extends Thread
             msgland.param4 = 0;
             msgland.param5 = 0;
             msgland.param6 = 0;
-            msgland.param7 = 00;
+            msgland.param7 = 0;
             
 			byte[] result2 = msgland.encode();
 			
 			System.out.println("Sending LAND command2... Bytes sent: " + result2.length);
-			String response = send(result2, true);
+			String response = send(result2, false);
 	        
             return response;
 	        

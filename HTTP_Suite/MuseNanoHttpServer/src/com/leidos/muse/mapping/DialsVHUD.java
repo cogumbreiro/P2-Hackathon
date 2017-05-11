@@ -78,16 +78,46 @@ public class DialsVHUD extends JFrame
 			datasetYaw.setValue(yaw*180/Math.PI);
 //			datasetHDG.setValue(alt);
 		}
+
+
+		/* Code synthesized by Pliny team */
+		/* begin */
+		public org.jfree.data.general.DefaultValueDataset updateValue(
+			org.jfree.data.general.DefaultValueDataset sypet_arg0,
+			double sypet_arg1){
+			java.lang.Number sypet_var3 = sypet_arg1;
+			sypet_arg0.setValue(sypet_var3);
+			return sypet_arg0;
+		}
+		/* end */
 		
 		public void updateHUD2(double hdg, double alt, double throttle)
 		{
 			datasetAlt.setValue(alt*3.2808399);
-			datasetThrottle.setValue(throttle);
+			/* Calling synthesized code by Pliny team */
+			/* begin */
+			datasetThrottle = updateValue(datasetThrottle, throttle);
+			/* end */
 		}
 		public void updateHUD3(double battery)
 		{
-			datasetBattery.setValue(battery);
+			/* Calling synthesized code by Pliny team */
+			/* begin */
+			datasetBattery = updateValue(datasetBattery, battery);
+			/* end */
 		}
+
+		/* Code synthesized by Pliny team */
+		/* begin */
+		public org.jfree.chart.JFreeChart createFreeChart(
+			org.jfree.chart.plot.dial.DialPlot sypet_arg0,
+			java.lang.String sypet_arg1)
+		{
+			org.jfree.chart.plot.Plot sypet_var3 = sypet_arg0;
+     		org.jfree.chart.JFreeChart sypet_var4 = new org.jfree.chart.JFreeChart(sypet_arg1,sypet_var3);
+		    return sypet_var4;
+		}
+		/* end */
 
 		public DemoPanel()
 		{
@@ -121,14 +151,12 @@ public class DialsVHUD extends JFrame
 	         DialPlot dialBatt = createDialPlot(new StandardDialScale(0, 100, 90D, -360D, 10D, 1), "percent");
 	         dialBatt.setDataset(datasetBattery);
 
-	         JFreeChart jfreechart1 = new JFreeChart(dialRoll);
-	         jfreechart1.setTitle("Roll");
-	         
-	         JFreeChart jfreechart2 = new JFreeChart(dialPitch);
-	         jfreechart2.setTitle("Pitch");
-	         
-	         JFreeChart jfreechart3 = new JFreeChart(dialYaw);
-	         jfreechart3.setTitle("Yaw");
+			/* Calling synthesized code by Pliny team */
+			/* begin */
+	         JFreeChart jfreechart1 = createFreeChart(dialRoll, "Roll");
+	         JFreeChart jfreechart2 = createFreeChart(dialPitch, "Pitch");
+	         JFreeChart jfreechart3 = createFreeChart(dialYaw, "Yaw");
+	         /* end */
 	         
 	         JFreeChart jfreechart4 = new JFreeChart(dialAlt);
 	         jfreechart4.setTitle("Altitude");

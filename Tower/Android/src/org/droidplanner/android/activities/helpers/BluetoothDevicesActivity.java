@@ -285,10 +285,30 @@ public class BluetoothDevicesActivity extends AppCompatActivity {
 			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 
+		/* Code synthesized by Pliny team */
+		/* begin */
+		public java.util.Collection fileToList(
+			java.util.Collection<BluetoothDevice> sypet_arg0, 
+			java.lang.String sypet_arg1) {
+
+     		java.util.ArrayList sypet_var9052 = new java.util.ArrayList();
+     		java.lang.Object sypet_var9053 = sypet_arg1;
+     		sypet_var9052.add(sypet_var9053);
+     		java.util.Collection sypet_var9056 = sypet_arg0;
+     		sypet_var9052.addAll(sypet_var9056);
+     		return sypet_var9052;
+		}
+		/* end */
+
         public void setPairedDevices(Collection<BluetoothDevice> pairedDevices){
             mPairedDevices.clear();
             if(pairedDevices.isEmpty()) {
                 mPairedDevices.add(getContext().getString(R.string.none_paired));
+            } else {
+            	/* Calling synthesized code by Pliny team */
+				/* begin */
+				mPairedDevices = fileToList(pairedDevices, getContext().getString(R.string.title_paired_devices));
+				/* end */
             }
             notifyDataSetChanged();
         }
